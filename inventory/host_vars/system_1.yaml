@@ -1,0 +1,6 @@
+---
+daemon:
+  name: "exampled"
+
+script:
+  name: "Test"

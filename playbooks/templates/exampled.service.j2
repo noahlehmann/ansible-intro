@@ -1,0 +1,11 @@
+[Unit]
+Description=Ansible set {{ daemon.name }} service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/example.sh
+DynamicUser=yes
+Group=nogroup
+
+[Install]
+WantedBy=multi-user.target

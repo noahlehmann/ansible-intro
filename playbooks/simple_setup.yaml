@@ -1,0 +1,52 @@
+---
+- name: Simple set up example for a debian based system
+  hosts: systems
+  tasks:
+    - name: Update apt cache
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install git on target system
+      become: true
+      ansible.builtin.apt:
+        name: git
+        state: present
+
+    - name: Copy service template to target
+      become: true
+      ansible.builtin.template:
+        src: templates/exampled.service.j2
+        dest: /etc/systemd/system/exampled.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create a file with content
+      become: true
+      ansible.builtin.copy:
+        dest: /usr/bin/example.sh
+        content: |
+          #!/bin/bash
+          echo "Hello, {{ script.name }}!"
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Reload systemd daemon
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Start exampled service
+      become: true
+      ansible.builtin.systemd:
+        name: exampled.service
+        state: started
+
+    - name: Enable exampled service
+      become: true
+      ansible.builtin.systemd:
+        name: exampled.service
+        enabled: yes
